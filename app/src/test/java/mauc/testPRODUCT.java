@@ -35,31 +35,6 @@ public class testPRODUCT {
     }
 
     @Test
-    public void incorrectHeader() throws Exception {
-
-        /*
-         * Missing header values returns 400 statusCode
-         */
-        RestAssured.given()
-        .get("https://public.cdr.tyro.com/cds-au/v1/banking/products")
-        .then()
-        .statusCode(400);
-    }
-
-    @Test
-    public void incorrectURL() throws Exception {
-
-        /*
-         * Incorrect URL request returns 404 statusCode
-         */
-        RestAssured.given()
-        .header("x-v", "3")
-        .get("https://public.cdr.tyro.com/cds-au/v1/bad_value")
-        .then()
-        .statusCode(404);
-    }
-
-    @Test
     public void termDepositsGET() throws Exception {
 
         /*
@@ -112,18 +87,44 @@ public class testPRODUCT {
     @Test
     public void negDetailedProductGET() throws Exception {
 
-        //Refine thiss
+        /*
+         * Accesses the Tyro BUSINESS_LOANS product and returns a 400 status code
+         */
         RestAssured.given()
         .get("https://public.cdr.tyro.com/cds-au/v1/banking/products/b5ee1091-e3af-4517-8f8f-8cc52434472b")
         .then()
-        .statusCode(400);
+        .statusCode(400)
+        .extract()
+        .path("bad_value");
     }
 
     @Test
     public void effectiveProductGET() throws Exception {
-        
+
+        /*
+         * Product GET request returning a 200 statusCode for effective "FUTURE" products
+         */
+        RestAssured.given()
+        .header("x-v", "3")
+        .queryParam("effective", "FUTURE")
+        .get("https://public.cdr.tyro.com/cds-au/v1/banking/products")
+        .then()
+        .statusCode(200);
     }
 
+    @Test
+    public void missingProductGET() {
+
+        /*
+         * Attempts to request a missing product
+         */
+        RestAssured.given()
+        .header("x-v", "3")
+        .queryParam("product-category", "TRADE_FINANCE")
+        .get("https://public.cdr.tyro.com/cds-au/v1/banking/products")
+        .then()
+        .statusCode(200);
+    }
 
     @Test
     public void responseTimeProductGET() throws Exception {
