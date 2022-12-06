@@ -49,7 +49,7 @@ public class testPRODUCT {
     }
 
     @Test
-    public void negTermDepositsGET() throws Exception {
+    public void negTermDepositsProductGET() throws Exception {
 
         /*
          * Incorrect value for accessing the TERM_DEPOSITS category returns a 400 statusCode
@@ -66,7 +66,7 @@ public class testPRODUCT {
     public void detailedEligibilityProductGET() throws Exception{
 
         /*
-         * Accesses the Tyro BUSSINESS_LOANS product and compares the expected information by the actual information
+         * Accesses the Tyro BUSSINESS_LOANS product and compares the expected information of eligibility by the actual information
          */
         String expected = "[{eligibilityType=BUSINESS, additionalInfo=You must have an active ABN., additionalInfoUri=null, additionalValue=null}, {eligibilityType=OTHER, additionalInfo=You must be a Tyro EFTPOS/eCommerce customer., additionalInfoUri=null, additionalValue=}]";
         ArrayList<String> actual = null;
@@ -127,7 +127,7 @@ public class testPRODUCT {
     }
 
     @Test
-    public void unknownBrandProductGET() {
+    public void unknownBrandProductGET() throws Exception {
 
         /*
          * Attemps to request an unknown brand. Expected 200 statusCode
@@ -141,7 +141,7 @@ public class testPRODUCT {
     }
 
     @Test
-    public void queryOnUnknownBrandGET() {
+    public void queryOnUnknownBrandProductGET() throws Exception {
 
         /*
          * Requesting TERM_DEPOSITS on an unknown brand. Expected 200 statusCode
@@ -156,7 +156,7 @@ public class testPRODUCT {
     }
 
     @Test
-    public void badQueryOnUnknownBrandGET() {
+    public void badQueryOnUnknownBrandProductGET() throws Exception {
 
         /*
          * Requesting an unknown product-category on an unknown brand. Expected 400 statusCode
@@ -168,6 +168,24 @@ public class testPRODUCT {
         .get("https://public.cdr.tyro.com/cds-au/v1/banking/products")
         .then()
         .statusCode(400);
+    }
+
+    @Test
+    public void responseDataProductGET() throws Exception {
+
+        /*
+         * Checks whether the response data is structured correctly (JSON)
+         */
+        String expected = "application/json";
+
+        String actual = RestAssured.given()
+        .header("x-v", "3")
+        .get("https://public.cdr.tyro.com/cds-au/v1/banking/products")
+        .then()
+        .extract()
+        .contentType();
+        
+        Assert.assertEquals(actual, expected, "Data mismatch");
     }
  
     @Test
