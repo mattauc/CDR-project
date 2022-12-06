@@ -113,10 +113,10 @@ public class testPRODUCT {
     }
 
     @Test
-    public void missingProductGET() {
+    public void missingProductGET() throws Exception {
 
         /*
-         * Attempts to request a missing product
+         * Attempts to request a missing product. Expected 200 statusCode
          */
         RestAssured.given()
         .header("x-v", "3")
@@ -126,6 +126,50 @@ public class testPRODUCT {
         .statusCode(200);
     }
 
+    @Test
+    public void unknownBrandProductGET() {
+
+        /*
+         * Attemps to request an unknown brand. Expected 200 statusCode
+         */
+        RestAssured.given()
+        .header("x-v", "3")
+        .queryParam("brand", "Unknown")
+        .get("https://public.cdr.tyro.com/cds-au/v1/banking/products")
+        .then()
+        .statusCode(200);
+    }
+
+    @Test
+    public void queryOnUnknownBrandGET() {
+
+        /*
+         * Requesting TERM_DEPOSITS on an unknown brand. Expected 200 statusCode
+         */
+        RestAssured.given()
+        .header("x-v", "3")
+        .queryParam("brand", "Unknown")
+        .queryParam("product-category", "TERM_DEPOSITS")
+        .get("https://public.cdr.tyro.com/cds-au/v1/banking/products")
+        .then()
+        .statusCode(200);
+    }
+
+    @Test
+    public void badQueryOnUnknownBrandGET() {
+
+        /*
+         * Requesting an unknown product-category on an unknown brand. Expected 400 statusCode
+         */
+        RestAssured.given()
+        .header("x-v", "3")
+        .queryParam("brand", "Unknown")
+        .queryParam("product-category", "TERM_DEPOSIT")
+        .get("https://public.cdr.tyro.com/cds-au/v1/banking/products")
+        .then()
+        .statusCode(400);
+    }
+ 
     @Test
     public void responseTimeProductGET() throws Exception {
 
